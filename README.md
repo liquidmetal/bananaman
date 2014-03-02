@@ -1,7 +1,6 @@
 bananaman
 =========
-
-[![Build Status](http://ci.utkarshsinha.com/job/BananaMan-CI/badge/icon)](http://ci.utkarshsinha.com/job/BananaMan-CI/)
+[![Build Status](http://ci.utkarshsinha.com/buildStatus/icon?job=BananaMan-Nightly)]
 Trying out commits!
 
 [ghatage 3-2-2014]
