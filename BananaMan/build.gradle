@@ -22,9 +22,36 @@ android {
     }
 }
 
+// Unit tests
+sourceSets {
+    unitTest {
+        java.srcDir file('src/test/java')
+        resources.srcDir file('src/test/res')
+    }
+}
+
+configurations {
+    unitTestCompile.extendsFrom runtime
+    unitTestRuntime.extendsFrom unitTestCompile
+}
+
 dependencies {
 
 	// You must install or update the Support Repository through the SDK manager to use this dependency.
 	// The Support Repository (separate from the corresponding library) can be found in the Extras category.
 	// compile 'com.android.support:appcompat-v7:18.0.0'
+
+    unitTestCompile files("$project.buildDir/classes/release")
+    unitTestCompile 'junit:junit:4.10', 'org.mockito:mockito-core:1.9.0'
+    unitTestCompile 'com.google.android:android:4.0.1.2'
+    unitTestCompile 'com.pivotallabs:robolectric:1.2'
+    configurations.unitTestCompile.exclude group: 'comp.google.android.maps'
 }
+
+task unitTest(type:Test, dependsOn: assemble) {
+    description = "run unit tests"
+    testClassesDir = project.sourceSets.unitTest.output.classesDir
+    classpath = project.sourceSets.unitTest.runtimeClasspath
+}
+
+check.dependsOn unitTest
