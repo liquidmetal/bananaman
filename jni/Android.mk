@@ -31,6 +31,7 @@ SRC_FILES += $(wildcard $(LOCAL_PATH)/gfx/vorbis/*.c)
 SRC_FILES := $(SRC_FILES:$(LOCAL_PATH)/%=%)
 LOCAL_SRC_FILES := $(SRC_FILES)
 LOCAL_LDLIBS := -L$(LOCAL_PATH)/../libs/armeabi
+LOCAL_LDLIBS += -L/usr/lib64
 LOCAL_SHARED_LIBRARIES := libopenal
 LOCAL_LDLIBS += -lz -lm -ldl -lGLESv2 -lEGL -llog
 LOCAL_CFLAGS := -O3 -mno-thumb -Wno-write-strings
