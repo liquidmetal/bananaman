@@ -6,8 +6,8 @@
     <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="19"></uses-sdk>
 
 
-    <application android:icon="@drawable/icon" android:label="chapter2-1" android:debuggable="false">
-        <activity android:name="com.android.templateApp.templateApp"
+    <application android:icon="@drawable/icon" android:label="chapter2-1" android:allowBackup="false">
+        <activity android:name="in.liquidmetal.bananaman.templateApp"
                   android:label="chapter2-1" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.android.templateApp;
+package in.liquidmetal.bananaman;
 
 import android.app.Activity;
 import android.os.Bundle;

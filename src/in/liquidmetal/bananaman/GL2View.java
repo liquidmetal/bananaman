@@ -1,4 +1,4 @@
-package com.android.templateApp;
+package in.liquidmetal.bananaman;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
