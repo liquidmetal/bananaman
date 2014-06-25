@@ -6,7 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-//import com.android.chapter2_1.R;
+import in.liquidmetal.bananaman.R;
 
 public class bananaman extends Activity implements SensorEventListener
 {  
