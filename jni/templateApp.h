@@ -71,39 +71,39 @@ void templateAppExit( void );
 
 		extern "C"
 		{
-			JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_Init( JNIEnv *env, jobject obj, jint width, jint height, jstring apkFilePath );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Init( JNIEnv *env, jobject obj, jint width, jint height, jstring apkFilePath );
 
-			JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_Draw( JNIEnv *env, jobject obj );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Draw( JNIEnv *env, jobject obj );
 
-			JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
-			JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
-			JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
-			JNIEXPORT void JNICALL Java_com_android_templateApp_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z );
+			JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z );
 		};
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_Init( JNIEnv *env, jobject obj, jint width, jint height, jstring apkFilePath )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Init( JNIEnv *env, jobject obj, jint width, jint height, jstring apkFilePath )
 		{
 			setenv( "FILESYSTEM", env->GetStringUTFChars( apkFilePath, NULL ), 1 );
 
 			if( templateApp.Init ) templateApp.Init( width, height );
 		}
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_Draw( JNIEnv *env, jobject obj )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Draw( JNIEnv *env, jobject obj )
 		{ if( templateApp.Draw ) templateApp.Draw(); }
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
 		{ if( templateApp.ToucheBegan ) templateApp.ToucheBegan( x, y, tap_count ); }
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
 		{ if( templateApp.ToucheMoved ) templateApp.ToucheMoved( x, y, tap_count ); }
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
 		{ if( templateApp.ToucheEnded ) templateApp.ToucheEnded( x, y, tap_count ); }
 
-		JNIEXPORT void JNICALL Java_com_android_templateApp_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z )
+		JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z )
 		{ if( templateApp.Accelerometer ) templateApp.Accelerometer( x, y, z ); }
 
 	#endif
