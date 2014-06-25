@@ -27,22 +27,20 @@ as being the original software.
 
 #include "bananaman.h"
 
-BANANAMAN bananaman = { templateAppInit,
-						templateAppDraw };
+BANANAMAN bananaman = { bananamanInit,
+						bananamanDraw };
 
 #define VERTEX_SHADER ( char * )"vertex.glsl"
-
 #define FRAGMENT_SHADER ( char * )"fragment.glsl"
-
 #define DEBUG_SHADERS 1
 
 PROGRAM *program = NULL;
 
 MEMORY *m = NULL;
 
-void templateAppInit( int width, int height )
+void bananamanInit( int width, int height )
 {
-	atexit( templateAppExit );
+	atexit( bananamanExit );
 
 	GFX_start();
 
@@ -99,7 +97,7 @@ void templateAppInit( int width, int height )
 }
 
 
-void templateAppDraw( void )
+void bananamanDraw( void )
 {
 	static const float POSITION[ 8 ] = {
 	0.0f, 0.0f, // Down left (pivot point)
@@ -158,9 +156,9 @@ void templateAppDraw( void )
 }
 
 
-void templateAppExit( void )
+void bananamanExit( void )
 {
-	printf("templateAppExit...\n");
+	printf("bananamanExit...\n");
 	
 	if( program && program->vertex_shader ) 
 		program->vertex_shader = SHADER_free( program->vertex_shader );

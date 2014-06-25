@@ -25,8 +25,8 @@ as being the original software.
 
 */
 
-#ifndef TEMPLATEAPP_H
-#define TEMPLATEAPP_H
+#ifndef BANANAMAN_H
+#define BANANAMAN_H
 
 #include "gfx/gfx.h"
 
@@ -43,21 +43,21 @@ void ( *Accelerometer   )( float x, float y, float z );
 
 extern BANANAMAN bananaman;
 
-void templateAppInit( int width, int height );
+void bananamanInit( int width, int height );
 
-void templateAppDraw( void );
+void bananamanDraw( void );
 
-void templateAppToucheBegan( float x, float y, unsigned int tap_count );
+void bananamanToucheBegan( float x, float y, unsigned int tap_count );
 
-void templateAppToucheMoved( float x, float y, unsigned int tap_count );
+void bananamanToucheMoved( float x, float y, unsigned int tap_count );
 
-void templateAppToucheEnded( float x, float y, unsigned int tap_count );
+void bananamanToucheEnded( float x, float y, unsigned int tap_count );
 
-void templateAppToucheCancelled( float x, float y, unsigned int tap_count );
+void bananamanToucheCancelled( float x, float y, unsigned int tap_count );
 
-void templateAppAccelerometer( float x, float y, float z );
+void bananamanAccelerometer( float x, float y, float z );
 
-void templateAppExit( void );
+void bananamanExit( void );
 
 extern "C"
 {
