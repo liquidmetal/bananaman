@@ -100,14 +100,14 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>jni/templateApp.cpp</name>
+			<name>jni/bananaman.cpp</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/templateApp.cpp</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bananaman.cpp</locationURI>
 		</link>
 		<link>
-			<name>jni/templateApp.h</name>
+			<name>jni/bananaman.h</name>
 			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/templateApp.h</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/bananaman.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
