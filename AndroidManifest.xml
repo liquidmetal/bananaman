@@ -6,9 +6,9 @@
     <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="19"></uses-sdk>
 
 
-    <application android:icon="@drawable/icon" android:label="chapter2-1" android:allowBackup="false">
-        <activity android:name="in.liquidmetal.bananaman.templateApp"
-                  android:label="chapter2-1" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden" android:screenOrientation="portrait">
+    <application android:icon="@drawable/icon" android:label="BananaMan" android:allowBackup="false">
+        <activity android:name="in.liquidmetal.bananaman.bananaman"
+                  android:label="BananaMan" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

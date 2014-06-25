@@ -25,10 +25,10 @@ as being the original software.
 
 */
 
-#include "templateApp.h"
+#include "bananaman.h"
 
-TEMPLATEAPP templateApp = { templateAppInit,
-							templateAppDraw };
+BANANAMAN bananaman = { templateAppInit,
+						templateAppDraw };
 
 #define VERTEX_SHADER ( char * )"vertex.glsl"
 

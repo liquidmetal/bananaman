@@ -8,7 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 //import com.android.chapter2_1.R;
 
-public class templateApp extends Activity implements SensorEventListener
+public class bananaman extends Activity implements SensorEventListener
 {  
 	GL2View mView;
 	
@@ -19,7 +19,7 @@ public class templateApp extends Activity implements SensorEventListener
     	super.onCreate( icicle );
 
 		System.loadLibrary( "openal" );
-    	System.loadLibrary( "templateApp" );
+    	System.loadLibrary( "bananaman" );
     	
         mView = new GL2View( getApplication() );
 
