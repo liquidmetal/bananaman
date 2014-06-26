@@ -3,7 +3,7 @@
       package="in.liquidmetal.bananaman"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="19"></uses-sdk>
+    <uses-sdk android:targetSdkVersion="17" android:minSdkVersion="17"></uses-sdk>
 
 
     <application android:icon="@drawable/icon" android:label="BananaMan" android:allowBackup="false" android:hardwareAccelerated="true">
