@@ -41,6 +41,8 @@ android {
     compileSdkVersion 17
     buildToolsVersion "19.0.3"
 
+    project.ext.set("archivesBaseName", "bananaman")
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
