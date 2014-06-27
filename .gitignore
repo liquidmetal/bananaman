@@ -2,5 +2,6 @@ bin/
 libs/
 obj/
 build/
+gradle/
 .gradle/
 Thumbs.db
