@@ -4,8 +4,6 @@
       android:versionCode="1"
       android:versionName="1.0">
     <uses-sdk android:targetSdkVersion="19" android:minSdkVersion="10"></uses-sdk>
-
-
     <application android:icon="@drawable/icon" android:label="BananaMan" android:allowBackup="false">
         <activity android:name="in.liquidmetal.bananaman.bananaman"
                   android:label="BananaMan" android:theme="@android:style/Theme.NoTitleBar.Fullscreen" android:launchMode="singleTask" android:configChanges="orientation|keyboardHidden" android:screenOrientation="landscape">
