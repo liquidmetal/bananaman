@@ -23,11 +23,11 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>F:\Code\Android\android-ndk-r8c\ndk-build NDK_DEBUG=1 -j 4</value>
+					<value>NDK_DEBUG=1 -j 4</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>
-					<value>bash</value>
+					<value>ndk-build.cmd</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.cleanBuildTarget</key>
