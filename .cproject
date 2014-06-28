@@ -3,6 +3,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="com.android.toolchain.gcc.626595271">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.android.toolchain.gcc.626595271" moduleId="org.eclipse.cdt.core.settings" name="Default">
+				<macros>
+					<stringMacro name="BANANAMAN_NDK_BASE" type="VALUE_TEXT" value="/work/android-sdks/android-ndk-r9d"/>
+				</macros>
 				<externalSettings/>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -29,11 +32,11 @@
 								</inputType>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.625065078" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
-								<option id="gnu.cpp.compiler.option.include.paths.225091238" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.include.paths.225091238" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bananaman/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/platforms/android-19/arch-arm/usr/include"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/platforms/android-19/arch-arm/usr/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.487028430" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -43,9 +46,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.base.978633207" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.base">
 								<option id="gnu.c.compiler.option.include.paths.1888608300" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/bananaman/jni}&quot;"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/platforms/android-19/arch-arm/usr/include"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include"/>
-									<listOptionValue builtIn="false" value="/work/android-sdks/android-ndk-r9d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/platforms/android-19/arch-arm/usr/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${BANANAMAN_NDK_BASE}/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.2121297437" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
