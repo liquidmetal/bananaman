@@ -173,7 +173,7 @@ void bananamanInit( int width, int height )
                          ( float )width / ( float )height,
                          0.1f,
                          100.0f,
-                         -90.0f );
+                         0.0f );
 
     obj = OBJ_load( OBJ_FILE, 1 );
 
