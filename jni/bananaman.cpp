@@ -2,7 +2,7 @@
 Bananaman
 An open source game project
 
-This project uses the free GFX engine developed by Romain Marucchi-Foino
+This project use the free GFX engine developed by Romain Marucchi-Foino
 http://gfx.sio2interactive.com/
 
 This software is provided 'as-is', without any express or implied warranty.
