@@ -20,388 +20,147 @@ as being the original software.
 
 #include "bananaman.h"
 
-#define OBJ_FILE ( char * )"Scene.obj"
-#define PHYSIC_FILE ( char * )"Scene.bullet"
-
+#define OBJ_FILE (char*)"model.obj"
 #define VERTEX_SHADER ( char * )"vertex.glsl"
 #define FRAGMENT_SHADER ( char * )"fragment.glsl"
 #define DEBUG_SHADERS 1
 
+// Used for loading hte obj file
 OBJ *obj = NULL;
 
+// pointer to the mesh data inside the obj file
+OBJMESH *objmesh = NULL;
+
+// THe shader programs
 PROGRAM *program = NULL;
 
-float rotz = 0.0f,
-      rotx = 90.0f;
 
-float screen_size = 0.0f;
-
-vec2 view_location,
-      view_delta;
-
-vec3 move_location = { 0.0f, 0.0f, 0.0f },
-     move_delta;
-
-OBJMESH *camera = NULL;
+MEMORY *m = NULL;
 
 BANANAMAN bananaman = { bananamanInit,
                         bananamanDraw,
-                        bananamanToucheBegan,
-                        bananamanToucheMoved,
-                        bananamanToucheEnded};
+						bananamanToucheBegan,
+						bananamanToucheMoved};
+
+void program_draw_callback(void* ptr) {
+	PROGRAM *currentProgram = (PROGRAM*)ptr;
+	unsigned int i=0;
+
+	while(i < currentProgram->uniform_count) {
+		if(strcmp(currentProgram->uniform_array[i].name, "MODELVIEWPROJECTIONMATRIX") == 0) {
+			glUniformMatrix4fv(currentProgram->uniform_array[i].location, 1, GL_FALSE, (float*)GFX_get_modelview_projection_matrix());
+		}
+		i++;
+	}
+}
+
+void bananamanInit( int width, int height ) {
+	atexit( bananamanExit );
+
+	GFX_start();
+	glViewport( 0.0f, 0.0f, width, height );
+
+	GFX_set_matrix_mode(PROJECTION_MATRIX);
+	GFX_load_identity();
+	GFX_set_perspective(45.0f, (float)width/(float)height, 0.1f, 100.0f, 0.0f);
+
+	program = PROGRAM_create("default", VERTEX_SHADER, FRAGMENT_SHADER, 1, DEBUG_SHADERS, NULL, program_draw_callback);
+	obj = OBJ_load(OBJ_FILE, 1);
+
+	objmesh = &obj->objmesh[0];
+	unsigned char* vertex_array = NULL,
+			       *vertex_start = NULL;
+	unsigned int i=0,
+			index = 0,
+			stride = 0,
+			size = 0;
+
+	size = objmesh->n_objvertexdata * sizeof(vec3) * sizeof(vec3);
+	vertex_array = (unsigned char*)malloc(size);
+	vertex_start = vertex_array;
+
+	while(i < objmesh->n_objvertexdata) {
+		index = objmesh->objvertexdata[i].vertex_index;
+		memcpy(&obj->indexed_vertex[index], vertex_array, sizeof(vec3));
+		vertex_array += sizeof(vec3);
+
+		memcpy(&obj->indexed_normal[index], vertex_array, sizeof(vec3));
+		vertex_array += sizeof(vec3);
+
+		i++;
+	}
+
+	printf("GFX: %d items in the vertex data", i);
+
+	// Create a new vertex buffer object and store it in objmesh's vbo
+	glGenBuffers(1, &objmesh->vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, objmesh->vbo);
+	glBufferData(GL_ARRAY_BUFFER, size, vertex_start, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	free(vertex_start);
 
 
-btSoftBodyRigidBodyCollisionConfiguration *collisionconfiguration = NULL;
-
-btCollisionDispatcher *dispatcher = NULL;
-
-btBroadphaseInterface *broadphase = NULL;
-
-btConstraintSolver *solver = NULL;
-
-btSoftRigidDynamicsWorld *dynamicsworld = NULL;
+	// Now, we describe the triangles with these vertices
+	glGenBuffers(1, &objmesh->objtrianglelist[0].vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].vbo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].n_indice_array, objmesh->objtrianglelist[0].indice_array, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
-void init_physic_world( void )
-{
-    collisionconfiguration = new btSoftBodyRigidBodyCollisionConfiguration();
+	// Now to create a VAO
+	unsigned char attribute;
+	stride = sizeof(vec3) + sizeof(vec3);
 
-    dispatcher = new btCollisionDispatcher( collisionconfiguration );
+	glGenVertexArraysOES(1, &objmesh->vao);
+	glBindVertexArrayOES(objmesh->vao);
 
-    broadphase = new btDbvtBroadphase();
+	glBindBuffer(GL_ARRAY_BUFFER, objmesh->vbo);
+	attribute = PROGRAM_get_vertex_attrib_location(program, "POSITION");
+	glEnableVertexAttribArray(attribute);
 
-    solver = new btSequentialImpulseConstraintSolver();
+	// TODO How does glVertexAttribPointer know to look at the vbo?
+	glVertexAttribPointer(attribute, 3, GL_FLOAT, GL_FALSE, stride, NULL);
 
-    dynamicsworld = new btSoftRigidDynamicsWorld( dispatcher,
-                                                  broadphase,
-                                                  solver,
-                                                  collisionconfiguration );
+	attribute = PROGRAM_get_vertex_attrib_location(program, "NORMAL");
+	glEnableVertexAttribArray(attribute);
+	glVertexAttribPointer(attribute, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(sizeof(vec3)));
 
-    dynamicsworld->setGravity( btVector3( 0.0f, 0.0f, -9.8f ) );
+	// Now bind the triangle list vbo
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].vbo);
+
+	// End the VAO
+	glBindVertexArrayOES(0);
 }
 
 
-void load_physic_world( void )
-{
-    btBulletWorldImporter *btbulletworldimporter = new btBulletWorldImporter( dynamicsworld );
+void bananamanDraw( void ) {
+	glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-    MEMORY *memory = mopen( PHYSIC_FILE, 1 );
+	vec3 e = {0.0f, -4.0f, 0.0f},
+	     c = {0.0f, 0.0f, 0.0f},
+	     u = {0.0f, 1.0f, 0.0f};
 
-    btbulletworldimporter->loadFileFromMemory( ( char * )memory->buffer, memory->size );
+	GFX_look_at(&e, &c, &u);
 
-    mclose( memory );
-
-    unsigned int i = 0;
-
-    while( i != btbulletworldimporter->getNumRigidBodies() ) {
-
-        OBJMESH *objmesh = OBJ_get_mesh( obj,
-                                         btbulletworldimporter->getNameForPointer(
-                                         btbulletworldimporter->getRigidBodyByIndex( i ) ), 0 );
-
-        if( objmesh ) {
-
-            objmesh->btrigidbody = ( btRigidBody * )btbulletworldimporter->getRigidBodyByIndex( i );
-
-            objmesh->btrigidbody->setUserPointer( objmesh );
-        }
-
-        ++i;
-    }
-
-    delete btbulletworldimporter;
+	glBindVertexArrayOES(objmesh->vao);
+	PROGRAM_draw(program);
+	glDrawElements(GL_TRIANGLES, objmesh->objtrianglelist[0].n_indice_array, GL_UNSIGNED_SHORT, NULL);
 }
 
 
-void free_physic_world( void )
-{
-    while( dynamicsworld->getNumCollisionObjects() )
-    {
-        btCollisionObject *btcollisionobject = dynamicsworld->getCollisionObjectArray()[ 0 ];
-
-        btRigidBody *btrigidbody = btRigidBody::upcast( btcollisionobject );
-
-        if( btrigidbody )
-        {
-            delete btrigidbody->getCollisionShape();
-
-            delete btrigidbody->getMotionState();
-
-            dynamicsworld->removeRigidBody( btrigidbody );
-
-            dynamicsworld->removeCollisionObject( btcollisionobject );
-
-            delete btrigidbody;
-        }
-    }
-
-    delete collisionconfiguration; collisionconfiguration = NULL;
-
-    delete dispatcher; dispatcher = NULL;
-
-    delete broadphase; broadphase = NULL;
-
-    delete solver; solver = NULL;
-
-    delete dynamicsworld; dynamicsworld = NULL;
-}
-
-
-void program_bind_attrib_location( void *ptr )
-{
-
-    PROGRAM *program = ( PROGRAM * )ptr;
-
-    glBindAttribLocation( program->pid, 0, "POSITION" );
-    glBindAttribLocation( program->pid, 2, "TEXCOORD0" );
-}
-
-void bananamanInit( int width, int height )
-{
-    screen_size = ( width > height ) ? width : height;
-
-    atexit( bananamanExit );
-
-    GFX_start();
-
-    glViewport( 0.0f, 0.0f, width, height );
-
-    GFX_set_matrix_mode( PROJECTION_MATRIX );
-    GFX_load_identity();
-
-    GFX_set_perspective( 80.0f,
-                         ( float )width / ( float )height,
-                         0.1f,
-                         100.0f,
-                         0.0f );
-
-    obj = OBJ_load( OBJ_FILE, 1 );
-
-    unsigned int i = 0;
-
-    while( i != obj->n_objmesh ) {
-
-        OBJ_optimize_mesh( obj, i, 128 );
-
-        OBJ_build_mesh( obj, i );
-
-        OBJ_free_mesh_vertex_data( obj, i );
-
-        ++i;
-    }
-
-
-    init_physic_world();
-
-    load_physic_world();
-
-
-    camera = OBJ_get_mesh( obj, "camera", 0 );
-
-    camera->btrigidbody->setAngularFactor( 0.0f );
-
-    camera->visible = 0;
-
-
-    i = 0;
-    while( i != obj->n_texture ) {
-
-        OBJ_build_texture( obj,
-                           i,
-                           obj->texture_path,
-                           TEXTURE_MIPMAP | TEXTURE_16_BITS,
-                           TEXTURE_FILTER_2X,
-                           0.0f );
-        ++i;
-    }
-
-
-    i = 0;
-    while( i != obj->n_objmaterial ) {
-
-        OBJ_build_material( obj, i, NULL );
-
-        ++i;
-    }
-
-    program = PROGRAM_create( ( char * )"default",
-                              VERTEX_SHADER,
-                              FRAGMENT_SHADER,
-                              1,
-                              0,
-                              program_bind_attrib_location,
-                              NULL );
-
-    PROGRAM_draw( program );
-
-    glUniform1i( PROGRAM_get_uniform_location( program, ( char * )"DIFFUSE" ), 1 );
-}
-
-
-void bananamanDraw( void )
-{
-    glClearColor( 0.5f, 0.5f, 0.5f, 1.0f );
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-
-    GFX_set_matrix_mode( MODELVIEW_MATRIX );
-    GFX_load_identity();
-
-    if( view_delta.x || view_delta.y ) {
-
-        if( view_delta.y ) rotz -= view_delta.y;
-
-        if( view_delta.x ) {
-            rotx += view_delta.x;
-            rotx = CLAMP( rotx, 0.0f, 180.0f );
-        }
-
-        view_delta.x =
-        view_delta.y = 0.0f;
-    }
-
-    if( move_delta.z )
-    {
-        vec3 forward;
-
-        float r = rotz * DEG_TO_RAD,
-              c = cosf( r ),
-              s = sinf( r );
-
-        forward.x = c * move_delta.y - s * move_delta.x;
-        forward.y = s * move_delta.y + c * move_delta.x;
-
-        camera->btrigidbody->setLinearVelocity( btVector3( forward.x * move_delta.z * 6.7f,
-                                                           forward.y * move_delta.z * 6.7f,
-                                                           0.0f ) );
-
-        camera->btrigidbody->setActivationState( ACTIVE_TAG );
-    }
-    else
-    {
-        camera->btrigidbody->setActivationState( ISLAND_SLEEPING );
-    }
-
-    GFX_translate( camera->location.x,
-                   camera->location.y,
-                   camera->location.z +
-                 ( camera->dimension.z * 0.5f ) );
-
-    GFX_rotate( rotz, 0.0f, 0.0f, 1.0f );
-
-    GFX_rotate( rotx, 1.0f, 0.0f, 0.0f );
-
-    mat4_invert( GFX_get_modelview_matrix() );
-
-
-    unsigned int i = 0;
-
-    while( i != obj->n_objmesh ) {
-
-        OBJMESH *objmesh = &obj->objmesh[ i ];
-
-        GFX_push_matrix();
-
-        mat4 mat;
-
-        objmesh->btrigidbody->getWorldTransform().getOpenGLMatrix( ( float * )&mat );
-
-        memcpy( &objmesh->location, ( vec3 * )&mat.m[ 3 ], sizeof( vec3 ) );
-
-        GFX_multiply_matrix( &mat );
-
-        glUniformMatrix4fv( program->uniform_array[ 0 ].location,
-                            1,
-                            GL_FALSE,
-                            ( float * )GFX_get_modelview_projection_matrix() );
-
-        OBJ_draw_mesh( obj, i );
-
-        GFX_pop_matrix();
-
-        ++i;
-    }
-
-    dynamicsworld->stepSimulation( 1.0f / 60.0f );
-}
-
-
-
-void bananamanToucheBegan( float x, float y, unsigned int tap_count )
-{
-    if( y < ( screen_size * 0.5f ) )
-    {
-        move_location.x = x;
-        move_location.y = y;
-    }
-    else
-    {
-        view_location.x = x;
-        view_location.y = y;
-    }
-}
-
-
-void bananamanToucheMoved( float x, float y, unsigned int tap_count )
-{
-    if( y > ( ( screen_size * 0.5f ) - ( screen_size * 0.05f ) ) &&
-        y < ( ( screen_size * 0.5f ) + ( screen_size * 0.05f ) ) ) {
-
-        move_delta.z =
-        view_delta.x =
-        view_delta.y = 0.0f;
-
-        move_location.x = x;
-        move_location.y = y;
-
-        view_location.x = x;
-        view_location.y = y;
-    }
-
-    else if( y < ( screen_size * 0.5f ) ) {
-
-        vec3 touche = { x,
-                        y,
-                        0.0f };
-
-        vec3_diff( &move_delta,
-                   &touche,
-                   &move_location );
-
-        vec3_normalize( &move_delta,
-                        &move_delta );
-
-        move_delta.z = CLAMP( vec3_dist( &move_location, &touche ) / 128.0f,
-                              0.0f,
-                              1.0f );
-    }
-
-    else {
-
-        view_delta.x = view_delta.x * 0.75f + ( x - view_location.x ) * 0.25f;
-        view_delta.y = view_delta.y * 0.75f + ( y - view_location.y ) * 0.25f;
-
-        view_location.x = x;
-        view_location.y = y;
-    }
-}
-
-
-void bananamanToucheEnded( float x, float y, unsigned int tap_count )
-{
-    move_delta.z = 0.0f;
-}
-
-
-void bananamanExit( void )
-{
-
-    free_physic_world();
-
+void bananamanExit( void ) {
     SHADER_free( program->vertex_shader );
-
     SHADER_free( program->fragment_shader );
-
     PROGRAM_free( program );
+    OBJ_free(obj);
+}
 
-    OBJ_free( obj );
+void bananamanToucheBegan(float x, float y, unsigned int tap_count) {
+
+}
+
+void bananamanToucheMoved(float x, float y, unsigned int tap_count) {
+
 }
