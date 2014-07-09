@@ -81,16 +81,19 @@ void bananamanInit( int width, int height ) {
 
 	while(i < objmesh->n_objvertexdata) {
 		index = objmesh->objvertexdata[i].vertex_index;
-		memcpy(&obj->indexed_vertex[index], vertex_array, sizeof(vec3));
+		memcpy(vertex_array, &obj->indexed_vertex[index], sizeof(vec3));
 		vertex_array += sizeof(vec3);
 
-		memcpy(&obj->indexed_normal[index], vertex_array, sizeof(vec3));
+		memcpy(vertex_array, &obj->indexed_normal[index], sizeof(vec3));
 		vertex_array += sizeof(vec3);
 
 		i++;
 	}
 
-	printf("GFX: %d items in the vertex data", i);
+	char *info = (char*)malloc(sizeof(char)*1024);
+	sprintf(info, "GFX: %d items in the vertex data", i);
+	__android_log_write(ANDROID_LOG_INFO, "UTK", info);
+	free(info);
 
 	// Create a new vertex buffer object and store it in objmesh's vbo
 	glGenBuffers(1, &objmesh->vbo);
@@ -104,7 +107,7 @@ void bananamanInit( int width, int height ) {
 	// Now, we describe the triangles with these vertices
 	glGenBuffers(1, &objmesh->objtrianglelist[0].vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].vbo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].n_indice_array, objmesh->objtrianglelist[0].indice_array, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].n_indice_array * sizeof(unsigned short), objmesh->objtrianglelist[0].indice_array, GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 
@@ -135,12 +138,15 @@ void bananamanInit( int width, int height ) {
 
 
 void bananamanDraw( void ) {
-	glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+	GFX_set_matrix_mode(MODELVIEW_MATRIX);
+	GFX_load_identity();
 
 	vec3 e = {0.0f, -4.0f, 0.0f},
 	     c = {0.0f, 0.0f, 0.0f},
-	     u = {0.0f, 1.0f, 0.0f};
+	     u = {0.0f, 0.0f, 1.0f};
 
 	GFX_look_at(&e, &c, &u);
 
