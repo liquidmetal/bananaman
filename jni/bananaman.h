@@ -27,9 +27,9 @@ typedef struct
 {
 void ( *Init			)( int width, int height );
 void ( *Draw			)( void );
-void ( *ToucheBegan	    )( float x, float y, unsigned int tap_count );
-void ( *ToucheMoved	    )( float x, float y, unsigned int tap_count );
-void ( *ToucheEnded	    )( float x, float y, unsigned int tap_count );
+void ( *TouchBegan	    )( float x, float y, unsigned int tap_count );
+void ( *TouchMoved	    )( float x, float y, unsigned int tap_count );
+void ( *TouchEnded	    )( float x, float y, unsigned int tap_count );
 void ( *Accelerometer   )( float x, float y, float z );
 
 } BANANAMAN;
@@ -40,13 +40,13 @@ void bananamanInit( int width, int height );
 
 void bananamanDraw( void );
 
-void bananamanToucheBegan( float x, float y, unsigned int tap_count );
+void bananamanTouchBegan( float x, float y, unsigned int tap_count );
 
-void bananamanToucheMoved( float x, float y, unsigned int tap_count );
+void bananamanTouchMoved( float x, float y, unsigned int tap_count );
 
-void bananamanToucheEnded( float x, float y, unsigned int tap_count );
+void bananamanTouchEnded( float x, float y, unsigned int tap_count );
 
-void bananamanToucheCancelled( float x, float y, unsigned int tap_count );
+void bananamanTouchCancelled( float x, float y, unsigned int tap_count );
 
 void bananamanAccelerometer( float x, float y, float z );
 
@@ -58,11 +58,11 @@ extern "C"
 
     JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Draw( JNIEnv *env, jobject obj );
 
-    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
-    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
-    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
+    JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count );
 
     JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z );
 };
@@ -77,14 +77,14 @@ JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Init( JNIEnv *env, 
 JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_Draw( JNIEnv *env, jobject obj )
 { if( bananaman.Draw ) bananaman.Draw(); }
 
-JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
-{ if( bananaman.ToucheBegan ) bananaman.ToucheBegan( x, y, tap_count ); }
+JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchBegan( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+{ if( bananaman.TouchBegan ) bananaman.TouchBegan( x, y, tap_count ); }
 
-JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
-{ if( bananaman.ToucheMoved ) bananaman.ToucheMoved( x, y, tap_count ); }
+JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchMoved( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+{ if( bananaman.TouchMoved ) bananaman.TouchMoved( x, y, tap_count ); }
 
-JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_ToucheEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
-{ if( bananaman.ToucheEnded ) bananaman.ToucheEnded( x, y, tap_count ); }
+JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_GL2View_TouchEnded( JNIEnv *env, jobject obj, jfloat x, jfloat y, jint tap_count )
+{ if( bananaman.TouchEnded ) bananaman.TouchEnded( x, y, tap_count ); }
 
 JNIEXPORT void JNICALL Java_in_liquidmetal_bananaman_templateApp_Accelerometer( JNIEnv *env, jobject obj, jfloat x, jfloat y, jfloat z )
 { if( bananaman.Accelerometer ) bananaman.Accelerometer( x, y, z ); }
