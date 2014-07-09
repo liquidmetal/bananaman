@@ -7,6 +7,8 @@ varying lowp vec3 lightcolor;
 
 attribute mediump vec3 POSITION;
 attribute lowp vec3 NORMAL;
+attribute mediump vec2 TEXCOORD0;
+varying mediump vec2 texcoord0;
 lowp vec3 normal;
 
 void main( void ) { 	
@@ -15,5 +17,6 @@ void main( void ) {
 	mediump vec3 lightdirection = normalize(LIGHTPOSITION-position);
 	lowp float ndot1 = max(dot(normal, lightdirection), 0.0);
 	lightcolor = vec3(ndot1, ndot1, ndot1);
+	texcoord0 = TEXCOORD0;
 	gl_Position = PROJECTIONMATRIX * vec4(position, 1.0);
 }

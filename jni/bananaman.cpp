@@ -31,6 +31,8 @@ OBJ *obj = NULL;
 // pointer to the mesh data inside the obj file
 OBJMESH *objmesh = NULL;
 
+TEXTURE *texture = NULL;
+
 // THe shader programs
 PROGRAM *program = NULL;
 
@@ -63,6 +65,10 @@ void program_draw_callback(void* ptr) {
 		} else if(strcmp(currentProgram->uniform_array[i].name, "LIGHTPOSITION") == 0) {
 			vec3 l = { 0.0f, 0.0f, 0.0f };
 			glUniform3fv(currentProgram->uniform_array[i].location, 1, (float*)&l);
+		} else if(strcmp(currentProgram->uniform_array[i].name, "DIFFUSE") == 0 && !currentProgram->uniform_array[i].constant) {
+			// GL_TEXTURE0
+			currentProgram->uniform_array[i].constant = 1;
+			glUniform1i(currentProgram->uniform_array[i].location, 0);
 		}
 		i++;
 	}
@@ -81,25 +87,39 @@ void bananamanInit( int width, int height ) {
 	program = PROGRAM_create("default", VERTEX_SHADER, FRAGMENT_SHADER, 1, DEBUG_SHADERS, NULL, program_draw_callback);
 	obj = OBJ_load(OBJ_FILE, 1);
 
+	texture = TEXTURE_create(obj->objmaterial[0].map_diffuse,
+							 obj->objmaterial[0].map_diffuse,
+							 1,
+							 TEXTURE_MIPMAP,
+							 TEXTURE_FILTER_2X,
+							 0.0f);
+
+
 	objmesh = &obj->objmesh[0];
 	unsigned char* vertex_array = NULL,
 			       *vertex_start = NULL;
 	unsigned int i=0,
 			index = 0,
+			index_uv = 0,
 			stride = 0,
 			size = 0;
 
-	size = objmesh->n_objvertexdata * sizeof(vec3) * sizeof(vec3);
+	size = objmesh->n_objvertexdata * (sizeof(vec3) + sizeof(vec3) + sizeof(vec2));
 	vertex_array = (unsigned char*)malloc(size);
 	vertex_start = vertex_array;
 
 	while(i < objmesh->n_objvertexdata) {
 		index = objmesh->objvertexdata[i].vertex_index;
+		index_uv = objmesh->objvertexdata[i].uv_index;
+
 		memcpy(vertex_array, &obj->indexed_vertex[index], sizeof(vec3));
 		vertex_array += sizeof(vec3);
 
 		memcpy(vertex_array, &obj->indexed_normal[index], sizeof(vec3));
 		vertex_array += sizeof(vec3);
+
+		memcpy(vertex_array, &obj->indexed_uv[index_uv], sizeof(vec2));
+		vertex_array += sizeof(vec2);
 
 		i++;
 	}
@@ -127,7 +147,7 @@ void bananamanInit( int width, int height ) {
 
 	// Now to create a VAO
 	unsigned char attribute;
-	stride = sizeof(vec3) + sizeof(vec3);
+	stride = sizeof(vec3) + sizeof(vec3) + sizeof(vec2);
 
 	glGenVertexArraysOES(1, &objmesh->vao);
 	glBindVertexArrayOES(objmesh->vao);
@@ -142,6 +162,10 @@ void bananamanInit( int width, int height ) {
 	attribute = PROGRAM_get_vertex_attrib_location(program, "NORMAL");
 	glEnableVertexAttribArray(attribute);
 	glVertexAttribPointer(attribute, 3, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(sizeof(vec3)));
+
+	attribute = PROGRAM_get_vertex_attrib_location(program, "TEXCOORD0");
+	glEnableVertexAttribArray(attribute);
+	glVertexAttribPointer(attribute, 2, GL_FLOAT, GL_FALSE, stride, BUFFER_OFFSET(sizeof(vec3) + sizeof(vec3)));
 
 	// Now bind the triangle list vbo
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objmesh->objtrianglelist[0].vbo);
@@ -169,6 +193,8 @@ void bananamanDraw( void ) {
 	GFX_rotate(rot_angle.z, 0, 0, 1);
 
 	glBindVertexArrayOES(objmesh->vao);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->tid);
 	PROGRAM_draw(program);
 	glDrawElements(GL_TRIANGLES, objmesh->objtrianglelist[0].n_indice_array, GL_UNSIGNED_SHORT, NULL);
 }
@@ -178,6 +204,7 @@ void bananamanExit( void ) {
     SHADER_free( program->vertex_shader );
     SHADER_free( program->fragment_shader );
     PROGRAM_free( program );
+    TEXTURE_free(texture);
     OBJ_free(obj);
 }
 
