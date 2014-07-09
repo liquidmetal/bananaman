@@ -39,8 +39,13 @@ MEMORY *m = NULL;
 
 BANANAMAN bananaman = { bananamanInit,
                         bananamanDraw,
-						bananamanToucheBegan,
-						bananamanToucheMoved};
+						bananamanTouchBegan,
+						bananamanTouchMoved};
+
+unsigned char auto_rotate = 0;
+vec2 touch = { 0.0f, 0.0f };
+vec3 rot_angle = { 0.0f, 0.0f, 0.0f };
+
 
 void program_draw_callback(void* ptr) {
 	PROGRAM *currentProgram = (PROGRAM*)ptr;
@@ -150,6 +155,10 @@ void bananamanDraw( void ) {
 
 	GFX_look_at(&e, &c, &u);
 
+	if(auto_rotate) rot_angle.z += 2.0f;
+	GFX_rotate(rot_angle.x, 1, 0, 0);
+	GFX_rotate(rot_angle.z, 0, 0, 1);
+
 	glBindVertexArrayOES(objmesh->vao);
 	PROGRAM_draw(program);
 	glDrawElements(GL_TRIANGLES, objmesh->objtrianglelist[0].n_indice_array, GL_UNSIGNED_SHORT, NULL);
@@ -163,10 +172,18 @@ void bananamanExit( void ) {
     OBJ_free(obj);
 }
 
-void bananamanToucheBegan(float x, float y, unsigned int tap_count) {
+void bananamanTouchBegan(float x, float y, unsigned int tap_count) {
+	if(tap_count==2) auto_rotate = !auto_rotate;
 
+	touch.x = x;
+	touch.y = y;
 }
 
-void bananamanToucheMoved(float x, float y, unsigned int tap_count) {
+void bananamanTouchMoved(float x, float y, unsigned int tap_count) {
+	auto_rotate = 0;
+	rot_angle.z += -(touch.x - x);
+	rot_angle.x += -(touch.y - y);
 
+	touch.x = x;
+	touch.y = y;
 }
