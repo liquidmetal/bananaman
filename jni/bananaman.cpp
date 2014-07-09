@@ -54,6 +54,15 @@ void program_draw_callback(void* ptr) {
 	while(i < currentProgram->uniform_count) {
 		if(strcmp(currentProgram->uniform_array[i].name, "MODELVIEWPROJECTIONMATRIX") == 0) {
 			glUniformMatrix4fv(currentProgram->uniform_array[i].location, 1, GL_FALSE, (float*)GFX_get_modelview_projection_matrix());
+		} else if(strcmp(currentProgram->uniform_array[i].name, "MODELVIEWMATRIX") == 0) {
+			glUniformMatrix4fv(currentProgram->uniform_array[i].location, 1, GL_FALSE, (float*)GFX_get_modelview_matrix());
+		} else if(strcmp(currentProgram->uniform_array[i].name, "PROJECTIONMATRIX") == 0) {
+			glUniformMatrix4fv(currentProgram->uniform_array[i].location, 1, GL_FALSE, (float*)GFX_get_projection_matrix());
+		} else if(strcmp(currentProgram->uniform_array[i].name, "NORMALMATRIX") == 0) {
+			glUniformMatrix3fv(currentProgram->uniform_array[i].location, 1, GL_FALSE, (float*)GFX_get_normal_matrix());
+		} else if(strcmp(currentProgram->uniform_array[i].name, "LIGHTPOSITION") == 0) {
+			vec3 l = { 0.0f, 0.0f, 0.0f };
+			glUniform3fv(currentProgram->uniform_array[i].location, 1, (float*)&l);
 		}
 		i++;
 	}
