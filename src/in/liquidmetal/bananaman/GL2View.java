@@ -51,11 +51,11 @@ class GL2View extends GLSurfaceView implements SurfaceHolder.Callback
         { egl.eglDestroyContext( display, context ); }
     }
        
-    public static native void ToucheBegan( float x, float y, int tap_count );
+    public static native void TouchBegan( float x, float y, int tap_count );
 
-    public static native void ToucheMoved( float x, float y, int tap_count );
+    public static native void TouchMoved( float x, float y, int tap_count );
     
-    public static native void ToucheEnded( float x, float y, int tap_count );
+    public static native void TouchEnded( float x, float y, int tap_count );
     
     private long last_tap = 0;
     
@@ -72,19 +72,19 @@ class GL2View extends GLSurfaceView implements SurfaceHolder.Callback
 
 	        	last_tap = event.getEventTime();
 
-	        	ToucheBegan( event.getX(0), event.getY(0), tap_count );
+	        	TouchBegan( event.getX(0), event.getY(0), tap_count );
 	        	break;
 	        }
 	        
 	        case MotionEvent.ACTION_MOVE:
 	        {
-	        	ToucheMoved( event.getX(0), event.getY(0), tap_count );
+	        	TouchMoved( event.getX(0), event.getY(0), tap_count );
 	        	break;
 	        }
 	        
 	        case MotionEvent.ACTION_UP:
 	        {
-	        	ToucheEnded( event.getX(0), event.getY(0), tap_count );
+	        	TouchEnded( event.getX(0), event.getY(0), tap_count );
 	        	break;
 	        }
         }
